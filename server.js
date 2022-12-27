@@ -2,7 +2,7 @@ const express = require("express")
 const cors = require("cors")
 const path = require("path")
 require('dotenv').config()
-// const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
 const expressSession = require("express-session")
 
 
@@ -18,6 +18,7 @@ const session = expressSession({
 })
 app.use(express.json())
 app.use(session)
+app.use(cookieParser());
 
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(path.resolve(__dirname, "public")))
@@ -40,21 +41,16 @@ if (process.env.NODE_ENV === "production") {
 }
 
 const bookmarkRoutes = require("./api/bookmark/bookmark.routes")
-const authRoutes = require("./api/auth/auth.routes")
 const userRoutes = require("./api/user/user.routes")
-const reviewRoutes = require("./api/review/review.routes")
 const { connectSockets } = require("./services/socket.service")
-const orderRoutes = require("./api/order/order.routes")
+
 
 // routes
 const setupAsyncLocalStorage = require("./middlewares/setupAls.middleware")
 app.all("*", setupAsyncLocalStorage)
 
 app.use("/api/bookmark", bookmarkRoutes)
-app.use("/api/auth", authRoutes)
 app.use("/api/user", userRoutes)
-app.use("/api/review", reviewRoutes)
-app.use("/api/order", orderRoutes)
 
 connectSockets(http, session)
 
@@ -64,7 +60,7 @@ app.get("/**", (req, res) => {
 })
 
 const logger = require("./services/logger.service")
-const port = process.env.PORT || 3030
+const port = process.env.PORT || 8000
 http.listen(port, () => {
   logger.info(`Server is running on port: http://localhost:${port}/`)
 })
