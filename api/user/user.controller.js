@@ -12,15 +12,14 @@ async function getUser(req, res) {
   }
 }
 
-async function updateUser(req, res) {
+async function updateUser(req, res) { 
   try {
     const bookmark = req.body
     const user = req.cookies.user
     let savedUser
     if (bookmark._id) {
-       savedUser = await userService.editBookmark(bookmark, user)
+      savedUser = await userService.editBookmark(bookmark, user)
     } else {
-      console.log('bookmark', bookmark);
       savedUser = await userService.addBookmark(bookmark, user)
     }
     res.send(savedUser)
